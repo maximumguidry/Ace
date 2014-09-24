@@ -1,0 +1,126 @@
+// JavaScript Document
+
+//declare variables
+var fn;
+var ln;
+var email;
+var phone;
+var submit;
+var clear;
+var p;
+
+//do all of this when the page loads into the window
+window.onload = function() {
+//set p's value to the local storaged parsed to a JSON object
+p = JSON.parse(localStorage.getItem('person'));
+console.log(p);
+//defining variable by their ids in html	
+fn = document.getElementById("firstName");
+ln = document.getElementById("lastName");
+email = document.getElementById("email");
+phone = document.getElementById("phone");
+submit = document.getElementById("submit");
+clear = document.getElementById("clear");
+//hiding error ids initially using style.visibility
+document.getElementById("fn_Error").style.visibility="hidden";
+document.getElementById("ln_Error").style.visibility="hidden";
+document.getElementById("email_Error").style.visibility="hidden";
+document.getElementById("phone_Error").style.visibility="hidden";
+
+
+//displays confirmation page if p, which is a parsed local storage object, is not null
+if (p != null)
+{
+	document.getElementById("confirmation").style.visibility="visible";	//confirmation id is now visible
+	document.getElementById("form").style.height="0px";
+	document.getElementById("form").style.visibility="hidden"; //hides forms
+	document.getElementById("info").innerHTML= "Name:  " + p.First_Name + " " + p.Last_Name + "<br />" + "Email:  " + p.Email + "<br />" + "Phone Number:  " + p.Phone_Number;
+}
+
+
+
+
+
+//this function tests for emptiness in forms, then makes visible the error message between span tags using submit.onclick
+submit.onclick = function() {
+	//setting regex variables to check structure of user-generated strings
+ var nameCheck = /\b[a-z\A-Z]*[a-z\A-Z]\b/i;
+ var emailCheck = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+ var phoneCheck = /1\(\d{3}\)\d{3}\-\d{4}/;
+		
+	
+		if (nameCheck.test(fn.value) == false) //test property of the regex variable checked against the fn.value which was set to the html first name input field.  If the test returns false, that means the structure doesn't match the expected format laid out by the regex
+		{
+			document.getElementById("fn").style.color="red"; //turns id red using style.red
+			document.getElementById("fn_Error").style.visibility="visible";	 //makes visible using style.visible
+			alert("Use only Letters!");
+		}
+		else //otherwise do this
+		{
+			document.getElementById("fn").style.color="black"; //ensures the element is black and hidden if evaluated statement is false
+			document.getElementById("fn_Error").style.visibility="hidden";	
+		}
+		
+		if (nameCheck.test(ln.value) == false) //test property of the regex variable checked against the ln.value which was set to the html last name input field.  If the test returns false, that means the structure doesn't match the expected format laid out by the regex
+		{
+			document.getElementById("ln").style.color="red";
+			document.getElementById("ln_Error").style.visibility="visible";	
+		}
+		else
+		{
+			document.getElementById("ln").style.color="black";
+			document.getElementById("ln_Error").style.visibility="hidden";	
+		}
+		if (emailCheck.test(email.value)==false) //test property of the regex variable checked against the email.value which was set to the html email input field.  If the test returns false, that means the structure doesn't match the expected format laid out by the regex
+		{
+			document.getElementById("mail").style.color="red";
+			document.getElementById("email_Error").style.visibility="visible";	
+		}
+		else
+		{
+			document.getElementById("mail").style.color="black";
+			document.getElementById("email_Error").style.visibility="hidden";	
+		}
+		if (phoneCheck.test(phone.value) == false) //test property of the regex variable checked against the phone.value which was set to the html phone number input field.  If the test returns false, that means the structure doesn't match the expected format laid out by the regex
+		{
+			document.getElementById("number").style.color="red";
+			document.getElementById("phone_Error").style.visibility="visible";
+			alert("Use this format: 1(nnn)nnn-nnnn");	
+		}
+		else
+		{
+			document.getElementById("number").style.color="black";
+			document.getElementById("phone_Error").style.visibility="hidden";	
+		}
+		
+		if(nameCheck.test(ln.value) == true && nameCheck.test(ln.value) == true && emailCheck.test(email.value) == true && phoneCheck.test(phone.value) == true) //this brings up the confirmation page if all of the forms matches the expected structure laid out by the regex
+		{
+			document.getElementById("confirmation").style.visibility="visible";	//confirmation id is now visible
+			document.getElementById("form").style.height="0px";
+			document.getElementById("form").style.visibility="hidden"; //hides forms
+			document.getElementById("info").innerHTML= "Name:  " + fn.value + " " + ln.value + "<br />" + "Email:  " + email.value + "<br />" + "Phone Number:  " + phone.value; //Displays listed string in the innerHTML paragraph with id "info"
+			// creates an object called "person" that uses the user input to set values to the object properties
+			var person = 
+			{"First_Name" : fn.value,
+			 "Last_Name"  : ln.value,
+			 "Email" : email.value,
+			 "Phone_Number" : phone.value};
+			 //logs the object "person"
+			 //stringifies object "person" and sets p to that value
+			p = JSON.stringify(person);
+			//console.log(p);
+			//sets local storage key of 'person' and assigns it the stringfied value of p
+			localStorage.setItem('person', p);
+			
+			
+		}	
+		
+}
+	//clear button clears localstorage and reloads a fresh page
+	clear.onclick = function(){
+		localStorage.clear();
+		location.reload();
+	}
+
+}
+
